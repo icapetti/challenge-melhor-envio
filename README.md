@@ -6,6 +6,7 @@
 - [ ] Docker
 - [ ] Docs
 - [ ] PEP8
+- [ ] Generate requirements
 - [ ] Pipeline diagram
 - [ ] README
 
