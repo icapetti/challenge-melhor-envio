@@ -3,10 +3,10 @@
 ## Planning
 - [x] ETL
 - [x] Report
+- [x] Generate requirements
 - [ ] Docker
 - [ ] Docs
 - [ ] PEP8
-- [ ] Generate requirements
 - [ ] Pipeline diagram
 - [ ] README
 
