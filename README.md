@@ -10,6 +10,7 @@
 - [x] README
 
 ## Project description
+The challenge is to read a zip file which contains a jsonline data, transforms and load to a MySQL database. Then, extract data from this database and generate a excel file report. All this process run on Docker containers.
 
 ## Pipeline diagram
 ![Pipeline](/docs_img/pipeline.png)
