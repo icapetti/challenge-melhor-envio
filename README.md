@@ -36,5 +36,3 @@ Run the `run_project.sh` script (sudo ./run_project.sh) or execute the following
 ### Report
 Sample of the data generated on `output_report` folder:
 ![File output sample](/docs_img/file_output_sample.png)
-
-**important!:** credentials on the repository it's not a good practice. Use this just for local studies, development and tests purpose.
