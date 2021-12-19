@@ -1,0 +1,20 @@
+version: "3"
+services:
+  etl-app:
+    image: python-etl-app
+    ports:
+    - 3000:3000
+    depends_on:
+      - mysqldb
+    volumes: 
+      - ./output_report:/etl_app_code/data/output
+  mysqldb:
+    image: mysql-etl-app
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+    - MYSQL_ROOT_PASSWORD=rootpass
+    - MYSQL_PASSWORD=root
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql/setup.sql:/docker-entrypoint-initdb.d/init.sql

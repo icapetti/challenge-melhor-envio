@@ -1,22 +1,24 @@
-"""TODO: docstring"""
+"""This script is responsible for the ETL process and Consumers and Requests reporting."""
 
 import json
-import shutil
+import logging
+from shutil import rmtree
 from pathlib import Path
 from os import makedirs
+from datetime import datetime
 
 from utils.etl_helper import ETL_Helper
 
-PROJECT_BASE_PATH = Path(__file__).resolve().parents[1]
+logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
+
+PROJECT_BASE_PATH = Path(__file__).resolve().parents[0]
 TMP = PROJECT_BASE_PATH / 'data' / 'tmp'
 FILE_PATH = PROJECT_BASE_PATH / 'data' / 'teste-data-engineer.zip'
 UNZIP_FILE_PATH = PROJECT_BASE_PATH / TMP / 'teste-data-engineer'/ 'logs.txt'
-CONFIGS_BASE_PATH = Path(__file__).resolve().parents[0] / 'configs'
-CREDENTIALS_PATH = CONFIGS_BASE_PATH / 'credentials.json'
-OUTPUT_FILE = PROJECT_BASE_PATH / 'data' / 'output' / 'consumer-and-service-report.xlsx'
-
-CONSUMER_QUERY = 'consumer-report-dql.sql'
-SERVICE_QUERY = 'service-report-dql.sql'
+CREDENTIALS_PATH = PROJECT_BASE_PATH / 'configs' / 'credentials.json'
+OUTPUT_FILE = PROJECT_BASE_PATH / 'data' / 'output' / f'consumer-and-service-report-{datetime.now()}.xlsx'
+CONSUMER_QUERY = PROJECT_BASE_PATH / 'configs' / 'consumer-report-dql.sql'
+SERVICE_QUERY = PROJECT_BASE_PATH / 'configs' / 'service-report-dql.sql'
 CONSUMER_SHEET_NAME = 'consumer'
 SERVICE_SHEET_NAME = 'service'
 
@@ -24,6 +26,7 @@ with open(CREDENTIALS_PATH) as file:
     MYSQL_CONN = json.load(file)['mysql']
 
 if __name__=='__main__':
+    logging.info("Starting ETL APP!")
     etl_helper = ETL_Helper()
 
     # Extract zip files to a temporary folder
@@ -47,14 +50,17 @@ if __name__=='__main__':
     etl_helper.load_to_mysql(db_conn=MYSQL_CONN, df=list_columns_converted, table="logs")
 
     # Delete temp folder and files
-    shutil.rmtree(TMP)
+    rmtree(TMP)
 
     # Create output folder if not exists
     makedirs(Path(__file__).resolve().parents[1] / 'data' / 'output', exist_ok=True)
 
+    logging.info("Start generating REPORT PROCESS...")
     # Get data from db
-    customer_report = etl_helper.query_mysql(db_conn=MYSQL_CONN, query_name=CONFIGS_BASE_PATH / CONSUMER_QUERY)
-    service_report = etl_helper.query_mysql(db_conn=MYSQL_CONN, query_name=CONFIGS_BASE_PATH / SERVICE_QUERY)
+    customer_report = etl_helper.query_mysql(db_conn=MYSQL_CONN, query_name=CONSUMER_QUERY)
+    service_report = etl_helper.query_mysql(db_conn=MYSQL_CONN, query_name=SERVICE_QUERY)
 
     # Write report to file
     etl_helper.write_df_to_xlsx(data=[customer_report, service_report], output_path=OUTPUT_FILE, sheet_names=[CONSUMER_SHEET_NAME, SERVICE_SHEET_NAME])
+
+    logging.info("End of ETL APP execution.")

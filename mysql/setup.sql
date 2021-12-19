@@ -1,8 +1,6 @@
-CREATE DATABASE logs;
-
+CREATE DATABASE IF NOT EXISTS logs;
 USE logs;
-
-CREATE TABLE logs
+CREATE TABLE IF NOT EXISTS logs
   (
      upstream_uri                                      TEXT,
      client_ip                                         VARCHAR(15),
