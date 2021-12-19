@@ -3,8 +3,7 @@
 ## Planning
 - [x] ETL
 - [x] Report
-- [x] Generate requ
-- [ ] sh to build and run docker
+- [x] Generate requirements
 - [ ] Docs
 - [ ] PEP8
 - [ ] Pipeline diagram

@@ -8,14 +8,20 @@ from pandas import json_normalize, to_datetime, read_sql, ExcelWriter
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 
+
 class ETL_Helper():
-    """This class is responsible for the methods that help in the process of Extracting, 
+    """This class is responsible for the methods that help in the process of Extracting,
     Transforming and loading data, as well as generating reports based on this data."""
 
     def __init__(self) -> None:
-        logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
+        logging.basicConfig(
+            format='%(asctime)s %(message)s',
+            level=logging.INFO)
 
-    def extract_zip(self, input_file_path:Path, extracted_files_path:Path) -> None:
+    def extract_zip(
+            self,
+            input_file_path: Path,
+            extracted_files_path: Path) -> None:
         """It unzips files with a .zip extension."""
         logging.info(f"Unzipping {input_file_path}")
         with ZipFile(input_file_path, 'r') as zipObj:
@@ -23,7 +29,7 @@ class ETL_Helper():
         logging.info(f"Files extracted successfully to {extracted_files_path}")
 
     def from_jsonlines_to_df(self, txt_source: Path) -> object:
-        """Reads files with .txt extension and jsonlines data and transforms 
+        """Reads files with .txt extension and jsonlines data and transforms
         the data into a data frame."""
         logging.info("Getting json from txt...")
         with open(txt_source) as file:
@@ -58,9 +64,10 @@ class ETL_Helper():
     def get_engine(self, db_conn: dict) -> Engine:
         """Get engine for database connection."""
         logging.info("Getting engine")
-        return create_engine("{jdbc}://{user}:{pass}@{host}:{port}/{db}".format(**db_conn))
+        return create_engine(
+            "{jdbc}://{user}:{pass}@{host}:{port}/{db}".format(**db_conn))
 
-    def load_to_mysql(self, db_conn: dict, df: object, table:str) -> None:
+    def load_to_mysql(self, db_conn: dict, df: object, table: str) -> None:
         """Loads a dataframe into a MYSQL table."""
         logging.info(f"Loading {len(df)} rows to {table}...")
         engine = self.get_engine(db_conn=db_conn)
@@ -80,8 +87,12 @@ class ETL_Helper():
         logging.info(f"Done! {len(df)} rows.")
         return df
 
-    def write_df_to_xlsx(self, data: list, sheet_names: list, output_path: Path) -> None:
-        """Writes the data of a Data Frame in a file with .xlsx extension. 
+    def write_df_to_xlsx(
+            self,
+            data: list,
+            sheet_names: list,
+            output_path: Path) -> None:
+        """Writes the data of a Data Frame in a file with .xlsx extension.
         If more than one Data Frame is entered, the data is saved in a single file separated by sheets."""
         logging.info(f"Writting {sheet_names} to file...")
         with ExcelWriter(output_path) as writer:
